@@ -1,0 +1,100 @@
+# -*- coding: utf-8 -*-
+"""Simple Library Management System"""
+
+# List to store book records
+books = []
+
+# Function to create a box around text
+def print_boxed(text):
+    border_line = "+" + "-" * (len(text) + 4) + "+"
+    print(border_line)
+    print("|" + " " * (len(text) + 2) + "|")
+    print("| " + text + " |")
+    print("|" + " " * (len(text) + 2) + "|")
+    print(border_line)
+
+# Function to add a book
+def add_book():
+    print_boxed("Add Book")
+    title = input("Enter book title: ").strip()
+    author = input("Enter book author: ").strip()
+    isbn = input("Enter book ISBN: ").strip()
+    new_book = {'title': title, 'author': author, 'isbn': isbn, 'available': True}
+    books.append(new_book)
+    print_boxed("Book added successfully.")
+
+# Function to search for a book
+def search_book():
+    print_boxed("Search Book")
+    keyword = input("Enter title or author to search: ").strip().lower()
+    results = [book for book in books if keyword in book['title'].lower() or keyword in book['author'].lower()]
+    if results:
+        print_boxed("Search Results")
+        for book in results:
+            print(f"Title: {book['title']}, Author: {book['author']}, ISBN: {book['isbn']}, Available: {'Yes' if book['available'] else 'No'}")
+    else:
+        print_boxed("No books found.")
+
+# Function to checkout a book
+def checkout_book():
+    print_boxed("Checkout Book")
+    isbn = input("Enter ISBN of the book to checkout: ").strip()
+    member_id = input("Enter member ID: ").strip()
+    for book in books:
+        if book['isbn'] == isbn:
+            if book['available']:
+                book['available'] = False
+                book['checked_out_by'] = member_id
+                print_boxed("Book checked out successfully.")
+                return
+            else:
+                print_boxed("Book is currently unavailable.")
+                return
+    print_boxed("Book not found.")
+
+# Function to return a book
+def return_book():
+    print_boxed("Return Book")
+    isbn = input("Enter ISBN of the book to return: ").strip()
+    member_id = input("Enter member ID: ").strip()
+    for book in books:
+        if book['isbn'] == isbn:
+            if not book['available'] and book.get('checked_out_by') == member_id:
+                book['available'] = True
+                del book['checked_out_by']
+                print_boxed("Book returned successfully.")
+                return
+            else:
+                print_boxed("Invalid return.")
+                return
+    print_boxed("Book not found.")
+
+# Main function to interact with the system
+def main():
+    while True:
+        print_boxed("Library Management System")
+        print("1. Add Book")
+        print("2. Search Book")
+        print("3. Checkout Book")
+        print("4. Return Book")
+        print("5. Exit")
+
+        choice = input("Enter your choice (1-5): ").strip()
+
+        if choice == '1':
+            add_book()
+        elif choice == '2':
+            search_book()
+        elif choice == '3':
+            checkout_book()
+        elif choice == '4':
+            return_book()
+        elif choice == '5':
+            print_boxed("Exiting the system.")
+            break
+        else:
+            print_boxed("Invalid choice. Please select a number between 1 and 5.")
+
+# Run the main function
+if __name__ == "__main__":
+    main()
